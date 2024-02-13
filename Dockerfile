@@ -1,7 +1,10 @@
-FROM golang:alpine3.19
+FROM golang:alpine3.19 AS builder
 
 WORKDIR /usr/src/app
+COPY hello.go .
 
-COPY hello-go.go .
+RUN go build hello.go
 
-ENTRYPOINT [ "go", "run", "hello-go.go" ]
+FROM scratch
+COPY --from=builder /usr/src/app/hello /app/
+CMD [ "/app/hello" ]
